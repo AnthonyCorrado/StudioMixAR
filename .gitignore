@@ -1,0 +1,12 @@
+/App
+/Library
+/obj
+/UWP
+
+/ProjectSettings
+
+/Assets/HoloToolkit
+
+Assembly-CSharp.csproj
+Assembly-CSharp-Editor.csproj
+StudioMixAR.sln
