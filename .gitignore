@@ -3,10 +3,18 @@
 /obj
 /UWP
 
+/Temp
+
 /ProjectSettings
 
 /Assets/HoloToolkit
+/Assets/HoloToolkit.meta
 
 Assembly-CSharp.csproj
 Assembly-CSharp-Editor.csproj
 StudioMixAR.sln
+
+Audio/
+Images/
+MusicalInstrumentsPack/
+PrimitivePlus/
