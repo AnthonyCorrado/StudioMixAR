@@ -24,15 +24,20 @@ public class TransportController : MonoBehaviour {
     {
         songList = songManager.getAllSongs();
 
-        // remove mock vector
-        Vector3 mockPos = new Vector3(0.275f, 0.06f, 0.995f);
         for (int i = 0; i < songList.Count; i++)
         {
+            // remove mock vector
+            Vector3 mockPos = new Vector3(0.275f, (i * 0.1f) - 0.05f, 0.995f);
+
             songPrefab = Resources.Load("Prefabs/SongButton");
 
             // instantiates song prefab
             Object song = Instantiate(songPrefab, mockPos, Quaternion.identity);
             song.name = songList[i].name;
+
+            // sets this song prefab as child of Transport
+            GameObject currentSong = GameObject.Find(songList[i].name);
+            currentSong.transform.parent = transform;
         }
     }
 }

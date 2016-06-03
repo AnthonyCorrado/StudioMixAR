@@ -42,7 +42,7 @@ public class SongManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-	    
+
 	}
 	
 	// Update is called once per frame
@@ -60,7 +60,7 @@ public class SongManager : MonoBehaviour {
         return SongList;
     }
 
-    public List<Track> initializeSong(string songTitle)
+    public List<Track> getSong(string songTitle)
     {
         if (songTitle == "recall")
         {
@@ -78,10 +78,10 @@ public class SongManager : MonoBehaviour {
         List<Track> InstrumentList = new List<Track>();
 
         // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
-        InstrumentList.Add(new Track("drums", "percussion", 7.0f, false, "recallDrums", "Recall"));
+        InstrumentList.Add(new Track("drums", "drums", 7.0f, false, "recallDrums", "Recall"));
         InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, "recallLeadVocals", "Recall"));
         InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, "recallPizzicato", "Recall"));
-        InstrumentList.Add(new Track("electricBass", "bass", 7.0f, false, "recallEBass", "Recall"));
+        InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, "recallEBass", "Recall"));
         InstrumentList.Add(new Track("strings", "string", 7.0f, false, "recallStrings", "Recall"));
         InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, "recallHarmonyVocals", "Recall"));
 
@@ -93,8 +93,8 @@ public class SongManager : MonoBehaviour {
         List<Track> InstrumentList = new List<Track>();
 
         // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
-        InstrumentList.Add(new Track("drums", "percussion", 7.0f, false, "recallDrums", "Not Recall"));
-        InstrumentList.Add(new Track("electricBass", "bass", 7.0f, false, "recallEBass", "Not Recall"));
+        InstrumentList.Add(new Track("drums", "drums", 7.0f, false, "recallDrums", "Not Recall"));
+        InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, "recallEBass", "Not Recall"));
         InstrumentList.Add(new Track("strings", "string", 7.0f, false, "recallStrings", "Not Recall"));
         InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, "recallHarmonyVocals", "Not Recall"));
 
