@@ -4,19 +4,23 @@ using System.Collections.Generic;
 
 public class SongManager : MonoBehaviour {
 
-    public List<Song> songList;
     public List<Track> song;
     AudioClip audioClip;
+    MixerController mixer;
 
     public class Song
     {
         public string name;
         public string genre;
+        public List<Track> tracks;
+        public bool isActive;
 
-        public Song(string name, string genre)
+        public Song(string name, string genre, List<Track> tracks, bool isActive)
         {
             this.name = name;
             this.genre = genre;
+            this.tracks = tracks;
+            this.isActive = isActive;
         }
     }
 
@@ -42,7 +46,7 @@ public class SongManager : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
+        mixer = GetComponent<MixerController>();
 	}
 	
 	// Update is called once per frame
@@ -54,15 +58,23 @@ public class SongManager : MonoBehaviour {
     {
         List<Song> SongList = new List<Song>();
 
-        SongList.Add(new Song("Recall", "pop"));
-        SongList.Add(new Song("Not Recall", "soundtrack"));
+        List<Track> recall = new List<Track>();
+        List<Track> recallTwo = new List<Track>();
+
+        recall = getRecall();
+        recallTwo = notRecall();
+
+        SongList.Add(new Song("Recall", "pop", recall, true));
+        SongList.Add(new Song("Not Recall", "soundtrack", recallTwo, false));
 
         return SongList;
     }
 
-    public List<Track> getSong(string songTitle)
+    //public List<Track> getSong(string songTitle)
+    void getSong(string songTitle)
     {
-        if (songTitle == "recall")
+        Debug.Log(songTitle);
+        if (songTitle == "Recall")
         {
             song = getRecall();
         }
@@ -70,9 +82,29 @@ public class SongManager : MonoBehaviour {
         {
             song = notRecall();
         }
-        return song;
+        //return song;
+        mixer.SendMessage("buildSong", song);
     }
 
+    public List<Track> initTracks()
+    {
+        List<Track> songList = new List<Track>();
+        List<Track> recall = new List<Track>();
+        List<Track> recallTwo = new List<Track>();
+
+        recall = getRecall();
+        recallTwo = notRecall();
+
+        songList.AddRange(recall);
+        songList.AddRange(recallTwo);
+        return songList;
+    }
+
+
+    /// <summary>
+    /// Below is the list of track details for each song.
+    /// Will need to come up with a more efficient approach in the future.
+    /// </summary>
     List<Track> getRecall()
     {
         List<Track> InstrumentList = new List<Track>();

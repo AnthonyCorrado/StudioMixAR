@@ -34,7 +34,6 @@ public class InFocusEffect : MonoBehaviour {
     {
         float t = 0;
         Vector3 currentScale = transform.localScale;
-        Debug.Log(currentScale);
         Vector3 targetScale;
         if (larger)
         {

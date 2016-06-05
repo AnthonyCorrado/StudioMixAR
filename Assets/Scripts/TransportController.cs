@@ -12,7 +12,6 @@ public class TransportController : MonoBehaviour {
 	void Start () {
         songManager = GetComponent<SongManager>();
         
-
         getSongs();
 	}
 
@@ -29,15 +28,18 @@ public class TransportController : MonoBehaviour {
             // remove mock vector
             Vector3 mockPos = new Vector3(0.275f, (i * 0.1f) - 0.05f, 0.995f);
 
+            string buttonFolder = songList[i].name + "_Button";
             songPrefab = Resources.Load("Prefabs/SongButton");
 
             // instantiates song prefab
             Object song = Instantiate(songPrefab, mockPos, Quaternion.identity);
-            song.name = songList[i].name;
+            song.name = buttonFolder;
 
             // sets this song prefab as child of Transport
-            GameObject currentSong = GameObject.Find(songList[i].name);
+            GameObject currentSong = GameObject.Find(buttonFolder);
             currentSong.transform.parent = transform;
+
+            currentSong.tag = "Song";
         }
     }
 }
