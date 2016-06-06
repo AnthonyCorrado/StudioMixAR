@@ -30,21 +30,6 @@ public class MixerController : MonoBehaviour {
         {
             instantiateTracks(songs[i]);
         }
-
-        //if (mixer.GetComponentInChildren<Transform>().childCount != 0)
-        //{
-        //    List<GameObject> children = new List<GameObject>();
-        //    foreach (Transform child in mixer.transform)
-        //    {
-        //        children.Add(child.gameObject);
-        //    }
-
-        //    foreach (var child in children)
-        //    {
-        //        Destroy(child);
-        //    }
-        //}
-       
     }
 
     void instantiateTracks(SongManager.Song song)
@@ -58,11 +43,14 @@ public class MixerController : MonoBehaviour {
             // plots prefab tracks equally spaced around the user
             int angle = i * (360 / song.tracks.Count);
             Vector3 plotPos = Circle(cameraPos, 2.2f, angle);
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);        
 
             // creates prefab based on instrument/track type or family
             string prefabType = song.tracks[i].type;
             trackPrefab = Resources.Load("Prefabs/" + prefabType);
+
+            // recalibrates rotation to ensure first prefab is facing center
+            rotation.x = 0.0f;
 
             // instantiates a track prefab
             var track = Instantiate(trackPrefab, plotPos, rotation);
@@ -84,7 +72,6 @@ public class MixerController : MonoBehaviour {
 
     private void initTrackAudio(string name, AudioClip audioClip, float volume)
     {
-        //Debug.Log(GameObject.Find(name));
         AudioSource audioSource = GameObject.Find(name).transform.GetChild(0).GetComponent<AudioSource>();
 
         // initializes audioClip of instantiated prefab
@@ -92,26 +79,8 @@ public class MixerController : MonoBehaviour {
         audioSource.Play();
     }
 
-    //void getSong(string songTitle)
-    //{
-    //    Debug.Log(songTitle);
-    //    if (songTitle == "Recall")
-    //    {
-    //        song = getRecall();
-    //    }
-    //    else if (songTitle == "Not Recall")
-    //    {
-    //        song = notRecall();
-    //    }
-    //    //return song;
-    //    mixer.SendMessage("buildSong", song);
-    //}
-
     void activateSong(string name)
     {
-        Transform[] songFolders;
-        Transform songFolder;
-
         int index = name.IndexOf("_Button");
         if (index != -1)
         {
@@ -120,8 +89,6 @@ public class MixerController : MonoBehaviour {
 
         foreach (Transform child in mixer.transform)
         {
-            Debug.Log(child.gameObject.name);
-            Debug.Log(name);
             if (child.gameObject.name == name)
             {
                 child.gameObject.SetActive(true);
@@ -131,9 +98,6 @@ public class MixerController : MonoBehaviour {
                 child.gameObject.SetActive(false);
             }
         }
-        //songFolder = mixer.transform.Find(name);
-        //songFolder.gameObject.SetActive(false);
-
     }
 
     Vector3 Circle(Vector3 center, float radius, int ang)

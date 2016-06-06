@@ -1,0 +1,33 @@
+Run on Unity Free | Mobile friendly
+
+Web demo: http://www.3y3.net/vuMeter/vuMeter.html
+
+Display the volume and frequencies of any sound in 3D meters. Super easy setup, drop the prefab, attach audio and ready! You can resize, move, rotate even animate each meter.
+
+3D Volume Meter and Spectrum Analysis in real time. Two prefabs ready to use in any scene. Simply drop the prefab where you wish and attach an audio source. The Volume Meter will display the volume level of the sound in real time and the Spetrum Analysis will sow the different frequency levels also in real time. Both prefabs are resizable and animable.
+
+You can configure many display options, there are six different leds shapes to choose, two color schemas, you can set the total number of leds in each column, the number of columns in the spectrum analysis and many many options.
+
+vuMeter Prefab
+==============
+Audio Source: attach the audio source you wish to show volume
+Shape: Shape of the led. Choose among six shapes, Quad, Cube, Capsule, Bag, Sphere and Cylinder.
+Mono Stereo: Choose the number of channels to show in the meter.
+Led Colors: There are two color schemas to choose, Green/Yellow/Red and Blue/Orange/Red
+Hide When Off: Hide the off leds and only show the enlightened
+Num Segments: Number of segments of each vol column
+Led Padding: Vertical separation of leds
+Led Separation: Separations of the leds columns
+Led Delta Z: Z position of the leds
+
+spectrumMeter Prefab
+====================
+Audio Source: attach the audio source you wish to show volume
+Shape: Shape of the led. Choose among six shapes, Quad, Cube, Capsule, Bag, Sphere and Cylinder.
+Mono Stereo: Choose the number of channels to show in the meter.
+Led Colors: There are two color schemas to choose, Green/Yellow/Red and Blue/Orange/Red
+Hide When Off: Hide the off leds and only show the enlightened
+Num Columns: Number of columns in spectrum
+Num Segments: Number of segments of each vol column
+Led Padding: Separation of leds
+Led Delta Z: Z position of the leds
