@@ -11,7 +11,7 @@ public class MixerController : MonoBehaviour {
     Object trackPrefab;
     Vector3 cameraPos;
 
-	void Start () {
+    void Start() {
         cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
         songManager = GetComponent<SongManager>();
         mixer = GameObject.Find("Mixer");
@@ -20,11 +20,11 @@ public class MixerController : MonoBehaviour {
         initializeTracks(allTracks);
     }
 
-	void Update () {
-        
-	}
+    void Update() {
 
-    void initializeTracks (List<SongManager.Song> songs)
+    }
+
+    void initializeTracks(List<SongManager.Song> songs)
     {
         for (int i = 0; i < songs.Count; i++)
         {
@@ -43,7 +43,7 @@ public class MixerController : MonoBehaviour {
             // plots prefab tracks equally spaced around the user
             int angle = i * (360 / song.tracks.Count);
             Vector3 plotPos = Circle(cameraPos, 2.2f, angle);
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);        
+            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);
 
             // creates prefab based on instrument/track type or family
             string prefabType = song.tracks[i].type;
@@ -79,25 +79,9 @@ public class MixerController : MonoBehaviour {
         audioSource.Play();
     }
 
-    void activateSong(string name)
+    void muteSoloTrack()
     {
-        int index = name.IndexOf("_Button");
-        if (index != -1)
-        {
-            name = name.Remove(index);
-        }
-
-        foreach (Transform child in mixer.transform)
-        {
-            if (child.gameObject.name == name)
-            {
-                child.gameObject.SetActive(true);
-            }
-            else
-            {
-                child.gameObject.SetActive(false);
-            }
-        }
+        Debug.Log("This track has been muted");
     }
 
     Vector3 Circle(Vector3 center, float radius, int ang)

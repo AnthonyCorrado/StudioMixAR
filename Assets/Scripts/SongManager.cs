@@ -94,10 +94,10 @@ public class SongManager : MonoBehaviour {
         List<Track> evolution = new List<Track>();
 
         recall = getRecall();
-        evolution = getEvolution();
+        //evolution = getEvolution();
 
         songList.AddRange(recall);
-        songList.AddRange(evolution);
+        //songList.AddRange(evolution);
         return songList;
     }
 
