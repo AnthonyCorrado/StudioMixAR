@@ -55,9 +55,10 @@ public class vuMeter : MonoBehaviour {
 		setUpSegments ();
 
         // get and assign AudioSource from parent-sibling gameObject
+
         foreach (Transform child in transform.parent.parent)
         {
-            if (child.name != "VolumePanel")
+            if (child.name != "VolumePanel" && child.name != "InstrumentPanel")
             {
                 audioSource = child.GetComponent<AudioSource>();
             }

@@ -4,9 +4,11 @@ using System.Collections;
 public class ActivateSongAction : MonoBehaviour {
 
     GameObject mixer;
+    MixerManager mixerManager;
 
 	void Start () {
         mixer = GameObject.Find("Mixer");
+        mixerManager = transform.parent.GetComponent<MixerManager>();
 	}
 	
 	void Update () {
@@ -32,5 +34,6 @@ public class ActivateSongAction : MonoBehaviour {
                 child.gameObject.SetActive(false);
             }
         }
+        mixerManager.activeSong = name;
     }
 }

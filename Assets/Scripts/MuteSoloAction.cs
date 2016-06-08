@@ -4,14 +4,17 @@ using System.Collections.Generic;
 
 public class MuteSoloAction : MonoBehaviour {
 
-    public MixerController mixer;
-    List<string> details = new List<string>();
+    public GameObject transport;
+    public MixerManager mixer;
 
     string instrumentName;
     string buttonName;
 
     void Start () {
-        instrumentName = GetComponent<Collider>().transform.root.name;
+        transport = GameObject.Find("Transport");
+        mixer = transport.GetComponent<MixerManager>() ;
+        // gets the name of the prefab'ed instrument
+        instrumentName = transform.parent.parent.parent.name;
 	}
 	
 	void Update () {
@@ -20,6 +23,7 @@ public class MuteSoloAction : MonoBehaviour {
 
     void MuteSolo (GameObject actionObject)
     {
+        Dictionary<string, string> details = new Dictionary<string, string>();
         buttonName = actionObject.name;
         int index = buttonName.IndexOf("Button");
         if (index != -1)
@@ -27,8 +31,8 @@ public class MuteSoloAction : MonoBehaviour {
             buttonName = buttonName.Remove(index);
         }
 
-        details.Add(instrumentName);
-        details.Add(buttonName);
+        details.Add("name", instrumentName);
+        details.Add("action", buttonName);
 
         mixer.SendMessageUpwards("MuteOrSoloTrack", details);
     }
