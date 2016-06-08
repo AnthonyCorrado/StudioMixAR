@@ -62,11 +62,11 @@ public class SongManager : MonoBehaviour {
         List<Track> evolution = new List<Track>();
 
         recall = getRecall();
-        evolution = getEvolution();
+        //evolution = getEvolution();
 
         // (song name, genre, tracks, isActive)
         SongList.Add(new Song("Recall", "pop", recall, true));
-        SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
+        //SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
 
         return SongList;
     }
@@ -113,10 +113,10 @@ public class SongManager : MonoBehaviour {
         // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
         InstrumentList.Add(new Track("drums", "drums", 7.0f, false, "recallDrums", "Recall"));
         InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, "recallLeadVocals", "Recall"));
-        InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, "recallPizzicato", "Recall"));
-        InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, "recallEBass", "Recall"));
-        InstrumentList.Add(new Track("strings", "string", 7.0f, false, "recallStrings", "Recall"));
-        InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, "recallHarmonyVocals", "Recall"));
+        //InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, "recallPizzicato", "Recall"));
+        //InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, "recallEBass", "Recall"));
+        //InstrumentList.Add(new Track("strings", "string", 7.0f, false, "recallStrings", "Recall"));
+        //InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, "recallHarmonyVocals", "Recall"));
 
         return InstrumentList;
     }

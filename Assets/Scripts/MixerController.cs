@@ -79,9 +79,14 @@ public class MixerController : MonoBehaviour {
         audioSource.Play();
     }
 
-    void muteSoloTrack()
+    void MuteOrSoloTrack(List<string> action)
     {
-        Debug.Log("This track has been muted");
+        Debug.Log("This is the button action" + action);
+        for (int i = 0; i < action.Count; i++)
+        {
+            Debug.Log(action[i]);
+        }
+
     }
 
     Vector3 Circle(Vector3 center, float radius, int ang)
