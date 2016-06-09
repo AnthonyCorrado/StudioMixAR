@@ -30,6 +30,7 @@ public class MixerController : MonoBehaviour {
         foreach (Transform child in currentTrackDir)
         {
             Debug.Log(child.name);
+           
             if (child.GetComponent<AudioSource>())
             {
                 child.GetComponent<AudioSource>().mute = isMuted;
