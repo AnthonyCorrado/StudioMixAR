@@ -45,11 +45,11 @@ public class MixerManager : MonoBehaviour {
         songFolder.transform.parent = mixer.transform;
 
         for (int i = 0; i < song.tracks.Count; i++)
-        {
+        { 
             string prefabName = song.tracks[i].name + "_" + song.tracks[i].songName;
             // plots prefab tracks equally spaced around the user
             int angle = i * (360 / song.tracks.Count);
-            Vector3 plotPos = Circle(cameraPos, 2.5f, angle);
+            Vector3 plotPos = Circle(cameraPos, 2.8f, angle);
             Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);
 
             // creates prefab based on instrument/track type or family

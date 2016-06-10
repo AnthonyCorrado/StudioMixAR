@@ -9,31 +9,34 @@ public class MixerController : MonoBehaviour {
 
     Transform currentSongDir;
     Transform currentTrackDir;
-
-    bool isMuted;
+    Transform instrument;
 
     void Start ()
     {
         mixerManager = GameObject.Find("Transport").GetComponent<MixerManager>();
-        isMuted = false;
     }
 
     void MuteTrack(string name)
     {
         activeSong = mixerManager.activeSong;
-        isMuted = !isMuted;
 
         currentSongDir = transform.Find(activeSong);
         currentTrackDir = currentSongDir.transform.Find(name);
+        instrument = currentTrackDir.transform.GetChild(0);
+        Transform muteButton;
+        muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
+
+        //muteUI(muteButton, instrument, isMuted);
 
         // targets the object containing the audio source
         foreach (Transform child in currentTrackDir)
-        {
-            Debug.Log(child.name);
-           
+        {           
             if (child.GetComponent<AudioSource>())
             {
-                child.GetComponent<AudioSource>().mute = isMuted;
+                AudioSource clip = child.GetComponent<AudioSource>();
+                clip.mute = !clip.mute;
+                muteUI(muteButton, instrument, clip.mute);
+                //child.GetComponent<AudioSource>().mute = isMuted;
             }
         }
         Debug.Log(name + " has been muted");
@@ -42,5 +45,24 @@ public class MixerController : MonoBehaviour {
     void SoloTrack(string name)
     {
         Debug.Log(name + " has been soloed");
+    }
+
+    void muteUI(Transform target, Transform instrument, bool isMuted)
+    {
+        IsActiveEffect activeEffect;
+        IsActiveEffect instrumentEffect;
+
+        activeEffect = target.GetComponent<IsActiveEffect>();
+        instrumentEffect = instrument.GetComponent<IsActiveEffect>();
+        if (isMuted)
+        {
+            activeEffect.AddActivePanelState();
+            instrumentEffect.RemoveActivePanelState();
+        }
+        else
+        {
+            activeEffect.RemoveActivePanelState();
+            instrumentEffect.AddActivePanelState();
+        }
     }
 }
