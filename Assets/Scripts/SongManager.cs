@@ -63,11 +63,11 @@ public class SongManager : MonoBehaviour {
         List<Track> evolution = new List<Track>();
 
         recall = getRecall();
-        evolution = getEvolution();
+        //evolution = getEvolution();
 
         // (song name, genre, tracks, isActive)
         SongList.Add(new Song("Recall", "pop", recall, true));
-        SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
+        //SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
 
         return SongList;
     }

@@ -16,6 +16,8 @@ public class MixerManager : MonoBehaviour {
     string trackName;
     string action;
 
+    float objectWidth;
+
     void Start()
     {
         cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
@@ -42,11 +44,15 @@ public class MixerManager : MonoBehaviour {
     void instantiateTracks(SongManager.Song song)
     {
         GameObject songFolder = new GameObject(song.name);
+        Object instrumentPanel = Resources.Load("Prefabs/InstrumentPanel");
         songFolder.transform.parent = mixer.transform;
+        Debug.Log(instrumentPanel);
 
         for (int i = 0; i < song.tracks.Count; i++)
-        { 
+        {
+
             string prefabName = song.tracks[i].name + "_" + song.tracks[i].songName;
+
             // plots prefab tracks equally spaced around the user
             int angle = i * (360 / song.tracks.Count);
             Vector3 plotPos = Circle(cameraPos, 2.8f, angle);
@@ -72,6 +78,38 @@ public class MixerManager : MonoBehaviour {
             currentClip = Resources.Load<AudioClip>("Audio/" + song.tracks[i].clipName);
             initTrackAudio(prefabName, currentClip, song.tracks[i].volume);
 
+            Debug.Log(trackPrefab);
+            foreach (Transform child in currentTrack.transform)
+            {
+                if (child.GetComponent<Collider>())
+                {
+                    objectWidth = child.GetComponent<Collider>().bounds.size.x;
+                }
+            }
+
+            // adds instrumentPanel to newly instantiated object
+            float adjustedPosX;
+
+            GameObject instroPanel = Instantiate(instrumentPanel, plotPos, rotation) as GameObject;
+            Vector3 adjustedPos;
+
+            instroPanel.name = "InstrumentPanel";
+            instroPanel.transform.parent = currentTrack.transform;
+            
+            // returns corrected position.x of instroPanel based on instrument
+            adjustedPosX = adjustPosition(objectWidth);
+
+            // Drums are natually rotatated 180 - instroPanel needs x and z axis corrected manually 
+            if (trackPrefab.name == "drums")
+            {
+                adjustedPos = new Vector3(-1 * adjustedPosX, 0.15f, -0.2f);
+                instroPanel.transform.localRotation = Quaternion.Euler(0, 180, 0);
+            }
+            else
+            {
+                adjustedPos = new Vector3(adjustedPosX, 0.15f, 0.2f);
+            }
+            instroPanel.transform.localPosition = adjustedPos;
         }
 
         songFolder.SetActive(song.isActive);
@@ -116,5 +154,23 @@ public class MixerManager : MonoBehaviour {
         pos.y = center.y;
         pos.z = center.z + radius * Mathf.Cos(angle * Mathf.Deg2Rad);
         return pos;
+    }
+
+    float adjustPosition(float width)
+    {
+        float positionX;
+        if (width < 0.1f)
+        {
+            positionX = 0.12f;
+        }
+        else if (width > 0.5f)
+        {
+            positionX = 0.45f;
+        }
+        else
+        {
+            positionX = 0.175f;
+        }
+        return positionX;
     }
 }
