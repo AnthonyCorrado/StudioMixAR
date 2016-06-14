@@ -7,7 +7,8 @@ public class MixerManager : MonoBehaviour {
     public string activeSong;
 
     SongManager songManager;
-    List<SongManager.Song> allTracks;
+    List<SongManager.Song> allSongs;
+    List<SongManager.Track> allTracks;
     GameObject mixer;
 
     Object trackPrefab;
@@ -18,14 +19,30 @@ public class MixerManager : MonoBehaviour {
 
     float objectWidth;
 
+    public Dictionary<Transform, AudioSource> allChannels;
+
     void Start()
     {
         cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
         songManager = GetComponent<SongManager>();
+        allChannels = new Dictionary<Transform, AudioSource>();
         mixer = GameObject.Find("Mixer");
 
-        allTracks = songManager.getAllSongs();
-        initializeTracks(allTracks);
+        allSongs = songManager.getAllSongs();
+
+        for (int x = 0; x < allSongs.Count; x++)
+        {
+            Debug.Log(allSongs[x].name);
+            for (int i = 0; i < allSongs[x].tracks.Count; i++)
+            {
+                Debug.Log(allSongs[x].tracks[i].name);
+                Debug.Log(allSongs[x].tracks[i].isMuted);
+            }
+        }
+        
+
+
+        initializeTracks(allSongs);
     }
 
     void Update()
@@ -44,13 +61,12 @@ public class MixerManager : MonoBehaviour {
     void instantiateTracks(SongManager.Song song)
     {
         GameObject songFolder = new GameObject(song.name);
-        Object instrumentPanel = Resources.Load("Prefabs/InstrumentPanel");
         songFolder.transform.parent = mixer.transform;
-        Debug.Log(instrumentPanel);
+
+        Object instrumentPanel = Resources.Load("Prefabs/InstrumentPanel");
 
         for (int i = 0; i < song.tracks.Count; i++)
         {
-
             string prefabName = song.tracks[i].name + "_" + song.tracks[i].songName;
 
             // plots prefab tracks equally spaced around the user
@@ -69,21 +85,27 @@ public class MixerManager : MonoBehaviour {
             var track = Instantiate(trackPrefab, plotPos, rotation);
             track.name = prefabName;
 
+            //allTracks.Add()
+
             // sets this track prefab to child of Mixer/:songName
             GameObject currentTrack = GameObject.Find(prefabName);
             currentTrack.transform.parent = songFolder.transform;
             AudioClip currentClip;
 
+
             // dynamically sets current tracks audio clip
             currentClip = Resources.Load<AudioClip>("Audio/" + song.tracks[i].clipName);
             initTrackAudio(prefabName, currentClip, song.tracks[i].volume);
 
-            Debug.Log(trackPrefab);
             foreach (Transform child in currentTrack.transform)
             {
                 if (child.GetComponent<Collider>())
                 {
                     objectWidth = child.GetComponent<Collider>().bounds.size.x;
+                }
+                if (child.GetComponent<AudioSource>())
+                {
+                    createMixingBoard(child);
                 }
             }
 
@@ -118,6 +140,17 @@ public class MixerManager : MonoBehaviour {
         {
             activeSong = song.name;
         }
+    }
+
+    void createMixingBoard(Transform track)
+    {
+        AudioSource trackClip = track.GetComponent<AudioSource>();
+        allChannels.Add(track, trackClip);
+    }
+
+    public Dictionary<Transform, AudioSource> getMixingBoard()
+    {
+        return allChannels;
     }
 
     private void initTrackAudio(string name, AudioClip audioClip, float volume)

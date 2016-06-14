@@ -31,15 +31,17 @@ public class SongManager : MonoBehaviour {
         public string type;
         public float volume;
         public bool isMuted;
+        public bool isSoloed;
         public string clipName;
         public string songName;
 
-        public Track(string name, string type, float volume, bool isMuted, string clipName, string songName)
+        public Track(string name, string type, float volume, bool isMuted, bool isSoloed, string clipName, string songName)
         {
             this.name = name;
             this.type = type;
             this.volume = volume;
             this.isMuted = isMuted;
+            this.isSoloed = isSoloed;
             this.clipName = clipName;
             this.songName = songName;
         }
@@ -60,11 +62,12 @@ public class SongManager : MonoBehaviour {
         List<Song> SongList = new List<Song>();
 
         List<Track> recall = new List<Track>();
-        List<Track> evolution = new List<Track>();
+        //List<Track> evolution = new List<Track>();
 
         recall = getRecall();
         //evolution = getEvolution();
 
+        
         // (song name, genre, tracks, isActive)
         SongList.Add(new Song("Recall", "pop", recall, true));
         //SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
@@ -112,12 +115,12 @@ public class SongManager : MonoBehaviour {
         List<Track> InstrumentList = new List<Track>();
 
         // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
-        InstrumentList.Add(new Track("drums", "drums", 7.0f, false, "recallDrums", "Recall"));
-        InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, "recallLeadVocals", "Recall"));
-        InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, "recallPizzicato", "Recall"));
-        InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, "recallEBass", "Recall"));
-        InstrumentList.Add(new Track("strings", "string", 7.0f, false, "recallStrings", "Recall"));
-        InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, "recallHarmonyVocals", "Recall"));
+        InstrumentList.Add(new Track("drums", "drums", 7.0f, false, false, "recallDrums", "Recall"));
+        InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, false, "recallLeadVocals", "Recall"));
+        InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, false, "recallPizzicato", "Recall"));
+        InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, false, "recallEBass", "Recall"));
+        InstrumentList.Add(new Track("strings", "string", 7.0f, false, false, "recallStrings", "Recall"));
+        InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, false, "recallHarmonyVocals", "Recall"));
 
         return InstrumentList;
     }
@@ -127,19 +130,19 @@ public class SongManager : MonoBehaviour {
         List<Track> InstrumentList = new List<Track>();
 
         // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
-        InstrumentList.Add(new Track("brass", "brass", 7.0f, false, "evolutionBrass", "Evolution"));
-        InstrumentList.Add(new Track("cello", "string", 7.0f, false, "evolutionCello", "Evolution"));
-        InstrumentList.Add(new Track("chorusFemale", "chorus", 7.0f, false, "evolutionChorusFemale", "Evolution"));
-        InstrumentList.Add(new Track("chorusMale", "chorus", 7.0f, false, "evolutionChorusMale", "Evolution"));
-        InstrumentList.Add(new Track("glockenspiel", "xylophone", 7.0f, false, "evolutionGlockenspiel", "Evolution"));
-        InstrumentList.Add(new Track("harp", "string", 7.0f, false, "evolutionHarp", "Evolution"));
-        InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, "evolutionPercussion", "Evolution"));
-        InstrumentList.Add(new Track("piano", "piano", 7.0f, false, "evolutionPiano", "Evolution"));
-        InstrumentList.Add(new Track("strings", "strings", 7.0f, false, "evolutionStrings", "Evolution"));
-        InstrumentList.Add(new Track("violas", "strings", 7.0f, false, "evolutionViolas", "Evolution"));
-        InstrumentList.Add(new Track("violin", "string", 7.0f, false, "evolutionViolin", "Evolution"));
-        InstrumentList.Add(new Track("windDeep", "wind", 7.0f, false, "evolutionWindDeep", "Evolution"));
-        InstrumentList.Add(new Track("windMid", "wind", 7.0f, false, "evolutionWindMid", "Evolution"));
+        InstrumentList.Add(new Track("brass", "brass", 7.0f, false, false,"evolutionBrass", "Evolution"));
+        InstrumentList.Add(new Track("cello", "string", 7.0f, false, false,  "evolutionCello", "Evolution"));
+        InstrumentList.Add(new Track("chorusFemale", "chorus", 7.0f, false, false, "evolutionChorusFemale", "Evolution"));
+        InstrumentList.Add(new Track("chorusMale", "chorus", 7.0f, false, false, "evolutionChorusMale", "Evolution"));
+        InstrumentList.Add(new Track("glockenspiel", "xylophone", 7.0f, false, false, "evolutionGlockenspiel", "Evolution"));
+        InstrumentList.Add(new Track("harp", "string", 7.0f, false, false, "evolutionHarp", "Evolution"));
+        InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, false, "evolutionPercussion", "Evolution"));
+        InstrumentList.Add(new Track("piano", "piano", 7.0f, false, false, "evolutionPiano", "Evolution"));
+        InstrumentList.Add(new Track("strings", "strings", 7.0f, false, false, "evolutionStrings", "Evolution"));
+        InstrumentList.Add(new Track("violas", "strings", 7.0f, false, false, "evolutionViolas", "Evolution"));
+        InstrumentList.Add(new Track("violin", "string", 7.0f, false, false, "evolutionViolin", "Evolution"));
+        InstrumentList.Add(new Track("windDeep", "wind", 7.0f, false, false, "evolutionWindDeep", "Evolution"));
+        InstrumentList.Add(new Track("windMid", "wind", 7.0f, false, false, "evolutionWindMid", "Evolution"));
 
         return InstrumentList;
     }

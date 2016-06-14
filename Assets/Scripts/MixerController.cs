@@ -11,9 +11,13 @@ public class MixerController : MonoBehaviour {
     Transform currentTrackDir;
     Transform instrument;
 
+    List<GameObject> mixingBoard;
+    public List<AudioSource> soloedTracks;
+
     void Start ()
     {
         mixerManager = GameObject.Find("Transport").GetComponent<MixerManager>();
+        mixingBoard = new List<GameObject>();
     }
 
     void MuteTrack(string name)
@@ -34,7 +38,7 @@ public class MixerController : MonoBehaviour {
             if (child.GetComponent<AudioSource>())
             {
                 AudioSource clip = child.GetComponent<AudioSource>();
-                clip.mute = !clip.mute;
+               // clip.mute = !clip.mute;
                 muteUI(muteButton, instrument, clip.mute);
                 //child.GetComponent<AudioSource>().mute = isMuted;
             }
@@ -63,6 +67,61 @@ public class MixerController : MonoBehaviour {
         {
             activeEffect.RemoveActivePanelState();
             instrumentEffect.AddActivePanelState();
+        }
+        updateMixerStatus(instrument, "solo");
+    }
+
+    void updateMixerStatus(Transform instrument, string action)
+    {
+        Debug.Log("update mixer called!!!");
+        GameObject[] taggedObjects;
+        taggedObjects = GameObject.FindGameObjectsWithTag("Track");
+
+        foreach(GameObject obj in taggedObjects)
+        {
+            mixingBoard.Add(obj);
+        }
+
+        for (int z = 0; z < mixingBoard.Count; z++)
+        {
+            AudioSource thisTrack = mixingBoard[z].GetComponent<AudioSource>();
+            if (action == "mute")
+            {
+                if (mixingBoard[z].name == instrument.name)
+                {
+                    thisTrack.mute = !thisTrack.mute;
+                }
+            }
+            else if (action == "solo")
+            {
+                if (!soloedTracks.Contains(thisTrack) && thisTrack.name == instrument.name)
+                {
+                    soloedTracks.Add(thisTrack);
+                    Debug.Log(thisTrack.name + " has been added");
+                }
+                else if (soloedTracks.Contains(thisTrack) && thisTrack.name == instrument.name)
+                {
+                    soloedTracks.Remove(thisTrack);
+                    Debug.Log(thisTrack.name + " has been removed");
+                }
+
+                for (int m = 0; m < mixingBoard.Count; m++)
+                {
+                    if (soloedTracks.Contains(thisTrack))
+                    {
+                        thisTrack.mute = false;
+                    }
+                    else
+                    {
+                        thisTrack.mute = true;
+                    }
+
+                }
+                //for (int s = 0; s < soloedTracks.Count; s++)
+                //{
+                //    if (!soloedTracks.
+                //}
+            }
         }
     }
 }
