@@ -137,9 +137,45 @@ public class MixerManager : MonoBehaviour {
             {
                 allSoloed.Add(track);
             }
-            track.audioSource.mute = track.isMuted;
         }
-        Debug.Log(allSoloed.Count);
+        
+        if (allSoloed.Count > 0)
+        {
+            List<Track> toBeSoloed = new List<Track>();
+            List<Track> toBeMuted = new List<Track>();
+
+            foreach (Track soloed in allSoloed)
+            {
+                foreach (Track track in allTracks)
+                {
+                    if (soloed.name == track.name)
+                    {
+                        Debug.Log("To be soloed: " + track.name);
+                        toBeSoloed.Add(track);
+                    }
+                    else
+                    {
+                        Debug.Log("To be muted: " + track.name);
+                        toBeSoloed.Add(track);
+                    }
+                }
+            }
+            foreach (Track solo in toBeSoloed)
+            {
+                solo.audioSource.mute = false;
+            }
+            foreach (Track mute in toBeMuted)
+            {
+                mute.audioSource.mute = true;
+            }
+        }
+        else
+        {
+            foreach (Track track in allTracks)
+            {
+                track.audioSource.mute = track.isMuted;
+            }
+        }
     }
 
     private void initTrackAudio(string name, AudioClip audioClip, Track track)
@@ -208,7 +244,13 @@ public class MixerManager : MonoBehaviour {
             if (track.isSoloed)
             {
                 activeSoloEffect.AddActivePanelState();
+                activeMuteEffect.RemoveActivePanelState();
                 instrumentEffect.AddActivePanelState();
+            }
+            else if (allSoloed.Count > 0 && !track.isSoloed)
+            {
+                activeMuteEffect.AddActivePanelState();
+                instrumentEffect.RemoveActivePanelState();
             }
             else
             {
