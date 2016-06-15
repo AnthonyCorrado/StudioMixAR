@@ -7,9 +7,15 @@ public class MixerManager : MonoBehaviour {
     public string activeSong;
 
     SongManager songManager;
-    List<SongManager.Song> allSongs;
-    List<SongManager.Track> allTracks;
+    Track track;
     GameObject mixer;
+
+    public List<SongManager.Song> allSongs;
+    public List<Track> allTracks;
+
+    Transform currentSongDir;
+    Transform currentTrackDir;
+    Transform instrument;
 
     Object trackPrefab;
     Vector3 cameraPos;
@@ -26,31 +32,14 @@ public class MixerManager : MonoBehaviour {
         cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
         songManager = GetComponent<SongManager>();
         allChannels = new Dictionary<Transform, AudioSource>();
+        allTracks = new List<Track>();
         mixer = GameObject.Find("Mixer");
 
         allSongs = songManager.getAllSongs();
-
-        for (int x = 0; x < allSongs.Count; x++)
-        {
-            Debug.Log(allSongs[x].name);
-            for (int i = 0; i < allSongs[x].tracks.Count; i++)
-            {
-                Debug.Log(allSongs[x].tracks[i].name);
-                Debug.Log(allSongs[x].tracks[i].isMuted);
-            }
-        }
-        
-
-
-        initializeTracks(allSongs);
+        initializeSongs(allSongs);
     }
 
-    void Update()
-    {
-
-    }
-
-    void initializeTracks(List<SongManager.Song> songs)
+    void initializeSongs(List<SongManager.Song> songs)
     {
         for (int i = 0; i < songs.Count; i++)
         {
@@ -67,7 +56,7 @@ public class MixerManager : MonoBehaviour {
 
         for (int i = 0; i < song.tracks.Count; i++)
         {
-            string prefabName = song.tracks[i].name + "_" + song.tracks[i].songName;
+            string prefabName = song.tracks[i].name;
 
             // plots prefab tracks equally spaced around the user
             int angle = i * (360 / song.tracks.Count);
@@ -85,17 +74,14 @@ public class MixerManager : MonoBehaviour {
             var track = Instantiate(trackPrefab, plotPos, rotation);
             track.name = prefabName;
 
-            //allTracks.Add()
-
             // sets this track prefab to child of Mixer/:songName
             GameObject currentTrack = GameObject.Find(prefabName);
             currentTrack.transform.parent = songFolder.transform;
             AudioClip currentClip;
 
-
             // dynamically sets current tracks audio clip
             currentClip = Resources.Load<AudioClip>("Audio/" + song.tracks[i].clipName);
-            initTrackAudio(prefabName, currentClip, song.tracks[i].volume);
+            initTrackAudio(prefabName, currentClip, song.tracks[i]);
 
             foreach (Transform child in currentTrack.transform)
             {
@@ -103,10 +89,10 @@ public class MixerManager : MonoBehaviour {
                 {
                     objectWidth = child.GetComponent<Collider>().bounds.size.x;
                 }
-                if (child.GetComponent<AudioSource>())
-                {
-                    createMixingBoard(child);
-                }
+                //if (child.GetComponent<AudioSource>())
+                //{
+                //    createMixingBoard(child);
+                //}
             }
 
             // adds instrumentPanel to newly instantiated object
@@ -132,6 +118,9 @@ public class MixerManager : MonoBehaviour {
                 adjustedPos = new Vector3(adjustedPosX, 0.15f, 0.2f);
             }
             instroPanel.transform.localPosition = adjustedPos;
+
+            // adds current track to allTracks for mixing board
+            allTracks.Add(new Track(song.tracks[i].name, song.tracks[i].type, song.tracks[i].volume, song.tracks[i].isMuted, song.tracks[i].isSoloed, song.tracks[i].clipName, song.tracks[i].audioSource, song.tracks[i].songName));
         }
 
         songFolder.SetActive(song.isActive);
@@ -140,43 +129,99 @@ public class MixerManager : MonoBehaviour {
         {
             activeSong = song.name;
         }
+
+        updateMixingBoard();
     }
 
-    void createMixingBoard(Transform track)
+    void updateMixingBoard()
     {
-        AudioSource trackClip = track.GetComponent<AudioSource>();
-        allChannels.Add(track, trackClip);
+        foreach (Track track in allTracks)
+        {
+            track.audioSource.mute = track.isMuted;
+        }
     }
 
-    public Dictionary<Transform, AudioSource> getMixingBoard()
-    {
-        return allChannels;
-    }
+    //void createMixingBoard(Transform track)
+    //{
+    //    AudioSource trackClip = track.GetComponent<AudioSource>();
+    //    allChannels.Add(track, trackClip);
+    //}
 
-    private void initTrackAudio(string name, AudioClip audioClip, float volume)
+    //public Dictionary<Transform, AudioSource> getMixingBoard()
+    //{
+    //    return allChannels;
+    //}
+
+    private void initTrackAudio(string name, AudioClip audioClip, Track track)
     {
         AudioSource audioSource = GameObject.Find(name).transform.GetChild(0).GetComponent<AudioSource>();
+        track.audioSource = audioSource;
 
         // initializes audioClip of instantiated prefab
-        audioSource.clip = audioClip;
-        audioSource.Play();
+        track.audioSource.clip = audioClip;
+        track.audioSource.Play();
     }
 
     void MuteOrSoloTrack(Dictionary<string, string> details)
     {
-        // determine what method to call and value to pass
-        foreach (KeyValuePair<string, string> detail in details)
+        for (int i = 0; i < allTracks.Count; i++)
         {
-            if (detail.Key == "name")
+            if (allTracks[i].name == details["name"])
             {
-                trackName = detail.Value;
+                if (details["action"] == "Mute")
+                {
+                    allTracks[i].isMuted = !allTracks[i].isMuted;
+                }
+                else
+                {
+                    allTracks[i].isSoloed = !allTracks[i].isSoloed;
+                }
+                updateUI(allTracks[i]);
             }
-            else if (detail.Key == "action")
-            {
-                action = detail.Value + "Track";
-            }
+            updateMixingBoard();
         }
-        mixer.SendMessage(action, trackName);
+    }
+
+    void updateUI(Track track)
+    {
+        Transform muteButton;
+        Transform soloButton;
+        IsActiveEffect activeMuteEffect;
+        IsActiveEffect activeSoloEffect;
+        IsActiveEffect instrumentEffect;
+
+        currentSongDir = mixer.transform.Find(activeSong);
+        currentTrackDir = currentSongDir.transform.Find(track.name);
+        instrument = currentTrackDir.transform.GetChild(0);
+
+        muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
+        soloButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/SoloButton/SoloButtonOutline");
+
+        activeMuteEffect = muteButton.GetComponent<IsActiveEffect>();
+        activeSoloEffect = soloButton.GetComponent<IsActiveEffect>();
+        instrumentEffect = instrument.GetComponent<IsActiveEffect>();
+
+
+        if (track.isMuted)
+        {
+            activeMuteEffect.AddActivePanelState();
+            instrumentEffect.RemoveActivePanelState();
+        }
+        else
+        {
+            activeMuteEffect.RemoveActivePanelState();
+            instrumentEffect.AddActivePanelState();
+        }
+
+        if (track.isSoloed)
+        {
+            activeSoloEffect.AddActivePanelState();
+            instrumentEffect.AddActivePanelState();
+        }
+        else
+        {
+            activeSoloEffect.RemoveActivePanelState();
+        }
     }
 
     Vector3 Circle(Vector3 center, float radius, int ang)
@@ -205,5 +250,26 @@ public class MixerManager : MonoBehaviour {
             positionX = 0.175f;
         }
         return positionX;
+    }
+    void Update()
+    {
+        // for testing of functions in Unity, create key press calls here.
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log("Alpha1 pressed");
+            for (int at = 0; at < allTracks.Count; at++)
+            {
+                Debug.Log(allTracks[at].name);
+                if (allTracks[at].isMuted)
+                {
+                    Debug.Log(allTracks[at].name + " is muted");
+                }
+                if (allTracks[at].isSoloed)
+                {
+                    Debug.Log(allTracks[at].isSoloed + " is soloed");
+                }
+            }
+            //gameObject.SendMessage("OnSelect");
+        }    
     }
 }

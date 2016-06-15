@@ -124,4 +124,12 @@ public class MixerController : MonoBehaviour {
             }
         }
     }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            
+        }
+    }
 }
