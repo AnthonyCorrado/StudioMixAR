@@ -6,6 +6,7 @@ public class IsActiveEffect : MonoBehaviour {
 
     Material defaultMaterial;
     Material activeMaterial;
+    Material activeSoloMaterial;
     Material inactiveMaterial;
     Renderer rend;
     List<Renderer> defaultMaterials = new List<Renderer>();
@@ -41,6 +42,7 @@ public class IsActiveEffect : MonoBehaviour {
 
         // stores material to apply for effects 
         activeMaterial = Resources.Load<Material>("Materials/Active");
+        activeSoloMaterial = Resources.Load<Material>("Materials/ActiveSolo");
         inactiveMaterial = Resources.Load<Material>("Materials/InactiveInstrument");
     }
 	
@@ -60,7 +62,14 @@ public class IsActiveEffect : MonoBehaviour {
             }
             else
             {
-                rend.material = activeMaterial;
+                if (gameObject.name == "MuteButtonOutline")
+                {
+                    rend.material = activeMaterial;
+                }
+                else if (gameObject.name == "SoloButtonOutline")
+                {
+                    rend.material = activeSoloMaterial;
+                }
             }
         }
     }

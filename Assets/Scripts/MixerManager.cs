@@ -12,6 +12,7 @@ public class MixerManager : MonoBehaviour {
 
     public List<SongManager.Song> allSongs;
     public List<Track> allTracks;
+    public List<Track> allSoloed;
 
     Transform currentSongDir;
     Transform currentTrackDir;
@@ -25,14 +26,12 @@ public class MixerManager : MonoBehaviour {
 
     float objectWidth;
 
-    public Dictionary<Transform, AudioSource> allChannels;
-
     void Start()
     {
         cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
         songManager = GetComponent<SongManager>();
-        allChannels = new Dictionary<Transform, AudioSource>();
         allTracks = new List<Track>();
+        allSoloed = new List<Track>();
         mixer = GameObject.Find("Mixer");
 
         allSongs = songManager.getAllSongs();
@@ -89,10 +88,6 @@ public class MixerManager : MonoBehaviour {
                 {
                     objectWidth = child.GetComponent<Collider>().bounds.size.x;
                 }
-                //if (child.GetComponent<AudioSource>())
-                //{
-                //    createMixingBoard(child);
-                //}
             }
 
             // adds instrumentPanel to newly instantiated object
@@ -135,22 +130,17 @@ public class MixerManager : MonoBehaviour {
 
     void updateMixingBoard()
     {
+        allSoloed.Clear();
         foreach (Track track in allTracks)
         {
+            if (track.isSoloed)
+            {
+                allSoloed.Add(track);
+            }
             track.audioSource.mute = track.isMuted;
         }
+        Debug.Log(allSoloed.Count);
     }
-
-    //void createMixingBoard(Transform track)
-    //{
-    //    AudioSource trackClip = track.GetComponent<AudioSource>();
-    //    allChannels.Add(track, trackClip);
-    //}
-
-    //public Dictionary<Transform, AudioSource> getMixingBoard()
-    //{
-    //    return allChannels;
-    //}
 
     private void initTrackAudio(string name, AudioClip audioClip, Track track)
     {
@@ -176,51 +166,54 @@ public class MixerManager : MonoBehaviour {
                 {
                     allTracks[i].isSoloed = !allTracks[i].isSoloed;
                 }
-                updateUI(allTracks[i]);
             }
-            updateMixingBoard();
         }
+        updateMixingBoard();
+        updateUI();
     }
 
-    void updateUI(Track track)
+    void updateUI()
     {
-        Transform muteButton;
-        Transform soloButton;
-        IsActiveEffect activeMuteEffect;
-        IsActiveEffect activeSoloEffect;
-        IsActiveEffect instrumentEffect;
-
-        currentSongDir = mixer.transform.Find(activeSong);
-        currentTrackDir = currentSongDir.transform.Find(track.name);
-        instrument = currentTrackDir.transform.GetChild(0);
-
-        muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
-        soloButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/SoloButton/SoloButtonOutline");
-
-        activeMuteEffect = muteButton.GetComponent<IsActiveEffect>();
-        activeSoloEffect = soloButton.GetComponent<IsActiveEffect>();
-        instrumentEffect = instrument.GetComponent<IsActiveEffect>();
-
-
-        if (track.isMuted)
+        foreach (Track track in allTracks)
         {
-            activeMuteEffect.AddActivePanelState();
-            instrumentEffect.RemoveActivePanelState();
-        }
-        else
-        {
-            activeMuteEffect.RemoveActivePanelState();
-            instrumentEffect.AddActivePanelState();
-        }
+            Transform muteButton;
+            Transform soloButton;
+            IsActiveEffect activeMuteEffect;
+            IsActiveEffect activeSoloEffect;
+            IsActiveEffect instrumentEffect;
 
-        if (track.isSoloed)
-        {
-            activeSoloEffect.AddActivePanelState();
-            instrumentEffect.AddActivePanelState();
-        }
-        else
-        {
-            activeSoloEffect.RemoveActivePanelState();
+            currentSongDir = mixer.transform.Find(activeSong);
+            currentTrackDir = currentSongDir.transform.Find(track.name);
+            instrument = currentTrackDir.transform.GetChild(0);
+
+            muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
+            soloButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/SoloButton/SoloButtonOutline");
+
+            activeMuteEffect = muteButton.GetComponent<IsActiveEffect>();
+            activeSoloEffect = soloButton.GetComponent<IsActiveEffect>();
+            instrumentEffect = instrument.GetComponent<IsActiveEffect>();
+
+
+            if (track.isMuted)
+            {
+                activeMuteEffect.AddActivePanelState();
+                instrumentEffect.RemoveActivePanelState();
+            }
+            else
+            {
+                activeMuteEffect.RemoveActivePanelState();
+                instrumentEffect.AddActivePanelState();
+            }
+
+            if (track.isSoloed)
+            {
+                activeSoloEffect.AddActivePanelState();
+                instrumentEffect.AddActivePanelState();
+            }
+            else
+            {
+                activeSoloEffect.RemoveActivePanelState();
+            }
         }
     }
 
