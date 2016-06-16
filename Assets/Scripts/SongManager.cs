@@ -68,13 +68,13 @@ public class SongManager : MonoBehaviour {
     {
         List<Track> songList = new List<Track>();
         List<Track> recall = new List<Track>();
-        List<Track> evolution = new List<Track>();
+        //List<Track> evolution = new List<Track>();
 
         recall = getRecall();
-        evolution = getEvolution();
+        //evolution = getEvolution();
 
         songList.AddRange(recall);
-        songList.AddRange(evolution);
+        //songList.AddRange(evolution);
         return songList;
     }
 
@@ -86,13 +86,13 @@ public class SongManager : MonoBehaviour {
     {
         List<Track> InstrumentList = new List<Track>();
 
-        // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip, component<AudioSource>, to use, song name)
+        // (name of gameObject created, name of prefab to use, volume, is muted?, is soloed?, name of audio clip, component<AudioSource>, song name)
         InstrumentList.Add(new Track("drums", "drums", 7.0f, false, false, "recallDrums", null, "Recall"));
         InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, false, "recallLeadVocals", null, "Recall"));
         InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, false, "recallPizzicato", null, "Recall"));
         InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, false, "recallEBass", null, "Recall"));
-        InstrumentList.Add(new Track("strings", "string", 7.0f, false, false, "recallStrings", null, "Recall"));
-        InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, false, "recallHarmonyVocals", null, "Recall"));
+        //InstrumentList.Add(new Track("strings", "string", 7.0f, false, false, "recallStrings", null, "Recall"));
+        //InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, false, "recallHarmonyVocals", null, "Recall"));
 
         return InstrumentList;
     }
@@ -101,7 +101,7 @@ public class SongManager : MonoBehaviour {
     {
         List<Track> InstrumentList = new List<Track>();
 
-        // (name of gameObject created, name of prefab to use, volume, is muted?, name of audio clip to use, song name)
+        // (name of gameObject created, name of prefab to use, volume, is muted?, is soloed?, name of audio clip, component<AudioSource>, song name)
         InstrumentList.Add(new Track("brass", "brass", 7.0f, false, false, "evolutionBrass", null,"Evolution"));
         InstrumentList.Add(new Track("cello", "string", 7.0f, false, false, "evolutionCello", null, "Evolution"));
         InstrumentList.Add(new Track("chorusFemale", "chorus", 7.0f, false, false, "evolutionChorusFemale", null, "Evolution"));

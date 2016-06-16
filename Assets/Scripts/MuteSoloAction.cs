@@ -21,19 +21,21 @@ public class MuteSoloAction : MonoBehaviour {
 
 	}
 
-    void MuteSolo (GameObject actionObject)
+    void MuteSolo (string name)
     {
-        Dictionary<string, string> details = new Dictionary<string, string>();
-        buttonName = actionObject.name;
-        int index = buttonName.IndexOf("Button");
-        if (index != -1)
+        //int index = buttonName.IndexOf("Button");
+        //if (index != -1)
+        //{
+        //    buttonName = buttonName.Remove(index);
+        //}
+
+        if (name == "MuteButton")
         {
-            buttonName = buttonName.Remove(index);
+            mixer.SendMessageUpwards("MuteTrack", instrumentName);
         }
-
-        details.Add("name", instrumentName);
-        details.Add("action", buttonName);
-
-        mixer.SendMessageUpwards("MuteOrSoloTrack", details);
+        else if (name == "SoloButton")
+        {
+            mixer.SendMessageUpwards("SoloTrack", instrumentName);   
+        }
     }
 }

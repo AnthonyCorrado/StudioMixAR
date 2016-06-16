@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,11 +15,14 @@ public class MixerManager : MonoBehaviour {
     public List<Track> allTracks;
     public List<Track> allSoloed;
 
+    public List<Track> toBeMuted;
+    public List<Track> toBeSoloed;
+
     Transform currentSongDir;
     Transform currentTrackDir;
     Transform instrument;
 
-    Object trackPrefab;
+    UnityEngine.Object trackPrefab;
     Vector3 cameraPos;
 
     string trackName;
@@ -32,6 +36,9 @@ public class MixerManager : MonoBehaviour {
         songManager = GetComponent<SongManager>();
         allTracks = new List<Track>();
         allSoloed = new List<Track>();
+        toBeMuted = new List<Track>();
+        toBeSoloed = new List<Track>();
+
         mixer = GameObject.Find("Mixer");
 
         allSongs = songManager.getAllSongs();
@@ -51,7 +58,7 @@ public class MixerManager : MonoBehaviour {
         GameObject songFolder = new GameObject(song.name);
         songFolder.transform.parent = mixer.transform;
 
-        Object instrumentPanel = Resources.Load("Prefabs/InstrumentPanel");
+        UnityEngine.Object instrumentPanel = Resources.Load("Prefabs/InstrumentPanel");
 
         for (int i = 0; i < song.tracks.Count; i++)
         {
@@ -116,6 +123,11 @@ public class MixerManager : MonoBehaviour {
 
             // adds current track to allTracks for mixing board
             allTracks.Add(new Track(song.tracks[i].name, song.tracks[i].type, song.tracks[i].volume, song.tracks[i].isMuted, song.tracks[i].isSoloed, song.tracks[i].clipName, song.tracks[i].audioSource, song.tracks[i].songName));
+
+            if (song.tracks[i].isSoloed && song.isActive)
+            {
+                allSoloed.Add(song.tracks[i]);
+            }
         }
 
         songFolder.SetActive(song.isActive);
@@ -125,56 +137,61 @@ public class MixerManager : MonoBehaviour {
             activeSong = song.name;
         }
 
-        updateMixingBoard();
+        if (song.isActive)
+        {
+            StartCoroutine(getAudibleStatus(CreateMixingBoard));
+        }
     }
 
-    void updateMixingBoard()
+    IEnumerator getAudibleStatus(Action mixingBoardAction)
     {
-        allSoloed.Clear();
-        foreach (Track track in allTracks)
-        {
-            if (track.isSoloed)
-            {
-                allSoloed.Add(track);
-            }
-        }
-        
         if (allSoloed.Count > 0)
         {
-            List<Track> toBeSoloed = new List<Track>();
-            List<Track> toBeMuted = new List<Track>();
-
-            foreach (Track soloed in allSoloed)
+            foreach (Track track in allTracks)
             {
-                foreach (Track track in allTracks)
+                if (track.isSoloed)
                 {
-                    if (soloed.name == track.name)
-                    {
-                        Debug.Log("To be soloed: " + track.name);
-                        toBeSoloed.Add(track);
-                    }
-                    else
-                    {
-                        Debug.Log("To be muted: " + track.name);
-                        toBeSoloed.Add(track);
-                    }
+                    toBeSoloed.Add(track);
+                }
+                else
+                {
+                    toBeMuted.Add(track);
                 }
             }
-            foreach (Track solo in toBeSoloed)
-            {
-                solo.audioSource.mute = false;
-            }
-            foreach (Track mute in toBeMuted)
-            {
-                mute.audioSource.mute = true;
-            }
         }
+        // else there are no soloed tracks initiailly
         else
         {
             foreach (Track track in allTracks)
             {
-                track.audioSource.mute = track.isMuted;
+                if (track.isMuted)
+                {
+                    toBeMuted.Add(track);
+                }
             }
+        }
+
+        yield return new WaitForSeconds(0);
+        mixingBoardAction();
+        
+    }
+
+    void CreateMixingBoard()
+    {
+        foreach (Track track in toBeMuted)
+        {
+            track.audioSource.mute = true;
+        }
+        Debug.Log("CreateMB called");
+        Debug.Log(toBeMuted.Count);
+        Debug.Log(toBeSoloed.Count);
+    }
+
+    void udpateMixingBoard(Track track)
+    {
+        if (track.isSoloed)
+        {
+            
         }
     }
 
@@ -204,12 +221,29 @@ public class MixerManager : MonoBehaviour {
                 }
             }
         }
-        updateMixingBoard();
-        updateUI();
+        //updateMixingBoard();
+        //updateUI();
     }
+
+    void MuteTrack(string name)
+    {
+        if (allSoloed.Count == 0)
+        {
+            foreach (Track track in allTracks)
+            {
+                if (track.name == name)
+                {
+                    track.isMuted = !track.isMuted;
+                    track.audioSource.mute = track.isMuted;
+                }
+            }
+        }
+    }
+
 
     void updateUI()
     {
+        Debug.Log("updateUI should be called 2nd");
         foreach (Track track in allTracks)
         {
             Transform muteButton;
