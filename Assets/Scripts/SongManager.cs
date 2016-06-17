@@ -98,17 +98,18 @@ public class SongManager : MonoBehaviour {
     }
 
     List<Track> getEvolution()
+
     {
         List<Track> InstrumentList = new List<Track>();
 
         // (name of gameObject created, name of prefab to use, volume, is muted?, is soloed?, name of audio clip, component<AudioSource>, song name)
         InstrumentList.Add(new Track("brass", "brass", 7.0f, false, false, "evolutionBrass", null,"Evolution"));
         InstrumentList.Add(new Track("cello", "string", 7.0f, false, false, "evolutionCello", null, "Evolution"));
-        InstrumentList.Add(new Track("chorusFemale", "chorus", 7.0f, false, false, "evolutionChorusFemale", null, "Evolution"));
-        InstrumentList.Add(new Track("chorusMale", "chorus", 7.0f, false, false, "evolutionChorusMale", null, "Evolution"));
-        InstrumentList.Add(new Track("glockenspiel", "xylophone", 7.0f, false, false, "evolutionGlockenspiel", null, "Evolution"));
+        //InstrumentList.Add(new Track("chorusFemale", "chorus", 7.0f, false, false, "evolutionChorusFemale", null, "Evolution"));
+        //InstrumentList.Add(new Track("chorusMale", "chorus", 7.0f, false, false, "evolutionChorusMale", null, "Evolution"));
+        //InstrumentList.Add(new Track("glockenspiel", "xylophone", 7.0f, false, false, "evolutionGlockenspiel", null, "Evolution"));
         InstrumentList.Add(new Track("harp", "string", 7.0f, false, false, "evolutionHarp", null, "Evolution"));
-        InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, false, "evolutionPercussion", null, "Evolution"));
+        //InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, false, "evolutionPercussion", null, "Evolution"));
         InstrumentList.Add(new Track("piano", "piano", 7.0f, false, false, "evolutionPiano", null, "Evolution"));
         //InstrumentList.Add(new Track("strings", "strings", 7.0f, false, false, "evolutionStrings", null, "Evolution"));
         //InstrumentList.Add(new Track("violas", "strings", 7.0f, false, false, "evolutionViolas", null, "Evolution"));
