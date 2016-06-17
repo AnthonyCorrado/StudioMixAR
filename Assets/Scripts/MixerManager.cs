@@ -118,7 +118,7 @@ public class MixerManager : MonoBehaviour {
             adjustedPosX = adjustPosition(objectWidth);
 
             // Drums are natually rotatated 180 - instroPanel needs x and z axis corrected manually 
-            if (trackPrefab.name == "drums")
+            if (trackPrefab.name == "drums" || trackPrefab.name == "brass")
             {
                 adjustedPos = new Vector3(-1 * adjustedPosX, 0.15f, -0.2f);
                 instroPanel.transform.localRotation = Quaternion.Euler(0, 180, 0);
@@ -288,6 +288,8 @@ public class MixerManager : MonoBehaviour {
     {
         currentSongDir = mixer.transform.Find(activeSong);
         currentTrackDir = currentSongDir.transform.Find(track.name);
+        Debug.Log(track.name);
+        Debug.Log(currentTrackDir.name);
         instrument = currentTrackDir.transform.GetChild(0);
 
         muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
