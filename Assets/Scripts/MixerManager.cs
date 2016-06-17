@@ -90,7 +90,6 @@ public class MixerManager : MonoBehaviour {
 
             // sets this track prefab to child of Mixer/:songName
             GameObject currentTrack = GameObject.Find(prefabName);
-            Debug.Log("CT name: " + prefabName);
             currentTrack.transform.parent = songFolder.transform;
             AudioClip currentClip;
 
@@ -113,7 +112,6 @@ public class MixerManager : MonoBehaviour {
             Vector3 adjustedPos;
 
             instroPanel.name = "InstrumentPanel";
-            Debug.Log("CT: " + currentTrack.transform);
             instroPanel.transform.parent = currentTrack.transform;
             
             // returns corrected position.x of instroPanel based on instrument
