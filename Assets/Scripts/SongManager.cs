@@ -35,15 +35,15 @@ public class SongManager : MonoBehaviour {
         List<Song> SongList = new List<Song>();
 
         List<Track> recall = new List<Track>();
-        //List<Track> evolution = new List<Track>();
+        List<Track> evolution = new List<Track>();
 
         recall = getRecall();
-        //evolution = getEvolution();
+        evolution = getEvolution();
 
         
         // (song name, genre, tracks, isActive)
         SongList.Add(new Song("Recall", "pop", recall, true));
-        //SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
+        SongList.Add(new Song("Evolution", "soundtrack", evolution, false));
 
         return SongList;
     }
@@ -64,19 +64,19 @@ public class SongManager : MonoBehaviour {
         mixer.SendMessage("buildSong", song);
     }
 
-    public List<Track> initTracks()
-    {
-        List<Track> songList = new List<Track>();
-        List<Track> recall = new List<Track>();
-        //List<Track> evolution = new List<Track>();
+    //public List<Track> initTracks()
+    //{
+    //    List<Track> songList = new List<Track>();
+    //    List<Track> recall = new List<Track>();
+    //    List<Track> evolution = new List<Track>();
 
-        recall = getRecall();
-        //evolution = getEvolution();
+    //    recall = getRecall();
+    //    evolution = getEvolution();
 
-        songList.AddRange(recall);
-        //songList.AddRange(evolution);
-        return songList;
-    }
+    //    songList.AddRange(recall);
+    //    songList.AddRange(evolution);
+    //    return songList;
+    //}
 
     /// <summary>
     /// Below is the list of track details for each song.
@@ -91,8 +91,8 @@ public class SongManager : MonoBehaviour {
         InstrumentList.Add(new Track("vox", "leadVox", 7.0f, false, false, "recallLeadVocals", null, "Recall"));
         InstrumentList.Add(new Track("pizzicato", "synth", 7.0f, false, false, "recallPizzicato", null, "Recall"));
         InstrumentList.Add(new Track("electricBass", "electricBass", 7.0f, false, false, "recallEBass", null, "Recall"));
-        //InstrumentList.Add(new Track("strings", "string", 7.0f, false, false, "recallStrings", null, "Recall"));
-        //InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, false, "recallHarmonyVocals", null, "Recall"));
+        InstrumentList.Add(new Track("strings", "string", 7.0f, false, false, "recallStrings", null, "Recall"));
+        InstrumentList.Add(new Track("harmony", "harmonyVox", 7.0f, false, false, "recallHarmonyVocals", null, "Recall"));
 
         return InstrumentList;
     }
@@ -110,8 +110,8 @@ public class SongManager : MonoBehaviour {
         InstrumentList.Add(new Track("harp", "string", 7.0f, false, false, "evolutionHarp", null, "Evolution"));
         InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, false, "evolutionPercussion", null, "Evolution"));
         InstrumentList.Add(new Track("piano", "piano", 7.0f, false, false, "evolutionPiano", null, "Evolution"));
-        InstrumentList.Add(new Track("strings", "strings", 7.0f, false, false, "evolutionStrings", null, "Evolution"));
-        InstrumentList.Add(new Track("violas", "strings", 7.0f, false, false, "evolutionViolas", null, "Evolution"));
+        //InstrumentList.Add(new Track("strings", "strings", 7.0f, false, false, "evolutionStrings", null, "Evolution"));
+        //InstrumentList.Add(new Track("violas", "strings", 7.0f, false, false, "evolutionViolas", null, "Evolution"));
         InstrumentList.Add(new Track("violin", "string", 7.0f, false, false, "evolutionViolin", null, "Evolution"));
         InstrumentList.Add(new Track("windDeep", "wind", 7.0f, false, false, "evolutionWindDeep", null, "Evolution"));
         InstrumentList.Add(new Track("windMid", "wind", 7.0f, false, false, "evolutionWindMid", null, "Evolution"));

@@ -15,6 +15,7 @@ public class ActivateSongAction : MonoBehaviour {
 	    
 	}
 
+    // sets current song title and calls method to set selected song's tracks to active
     void activateSong(string name)
     {
         int index = name.IndexOf("_Button");
@@ -35,5 +36,6 @@ public class ActivateSongAction : MonoBehaviour {
             }
         }
         mixerManager.activeSong = name;
+        SendMessageUpwards("setActiveSong");
     }
 }
