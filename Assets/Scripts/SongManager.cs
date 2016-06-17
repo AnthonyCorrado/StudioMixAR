@@ -81,6 +81,7 @@ public class SongManager : MonoBehaviour {
     /// <summary>
     /// Below is the list of track details for each song.
     /// Will need to come up with a more efficient approach in the future.
+    /// *** track/gameObject names cannot be named same as prefab if there are more than one ***
     /// </summary>
     List<Track> getRecall()
     {
@@ -111,7 +112,7 @@ public class SongManager : MonoBehaviour {
         InstrumentList.Add(new Track("harp", "string", 7.0f, false, false, "evolutionHarp", null, "Evolution"));
         InstrumentList.Add(new Track("percussion", "percussionSymbols", 7.0f, false, false, "evolutionPercussion", null, "Evolution"));
         InstrumentList.Add(new Track("piano", "piano", 7.0f, false, false, "evolutionPiano", null, "Evolution"));
-        InstrumentList.Add(new Track("strings", "strings", 7.0f, false, false, "evolutionStrings", null, "Evolution"));
+        InstrumentList.Add(new Track("stringMix", "strings", 7.0f, false, false, "evolutionStrings", null, "Evolution"));
         InstrumentList.Add(new Track("violas", "strings", 7.0f, false, false, "evolutionViolas", null, "Evolution"));
         InstrumentList.Add(new Track("violin", "string", 7.0f, false, false, "evolutionViolin", null, "Evolution"));
         InstrumentList.Add(new Track("windDeep", "wind", 7.0f, false, false, "evolutionWindDeep", null, "Evolution"));
