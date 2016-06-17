@@ -4,109 +4,132 @@ using System.Collections.Generic;
 
 public class MixerController : MonoBehaviour {
 
-    SongManager songManager;
-    List<SongManager.Song> allTracks;
-    GameObject mixer;
+    MixerManager mixerManager;
+    string activeSong;
 
-    Object trackPrefab;
-    Vector3 cameraPos;
+    Transform currentSongDir;
+    Transform currentTrackDir;
+    Transform instrument;
 
-	void Start () {
-        cameraPos = Camera.main.gameObject.transform.position + new Vector3(0, 0, 1.25f);
-        songManager = GetComponent<SongManager>();
-        mixer = GameObject.Find("Mixer");
+    List<GameObject> mixingBoard;
+    public List<AudioSource> soloedTracks;
 
-        allTracks = songManager.getAllSongs();
-        initializeTracks(allTracks);
+    void Start ()
+    {
+        mixerManager = GameObject.Find("Transport").GetComponent<MixerManager>();
+        mixingBoard = new List<GameObject>();
     }
 
-	void Update () {
-        
-	}
-
-    void initializeTracks (List<SongManager.Song> songs)
+    void MuteTrack(string name)
     {
-        for (int i = 0; i < songs.Count; i++)
-        {
-            instantiateTracks(songs[i]);
-        }
-    }
+        activeSong = mixerManager.activeSong;
 
-    void instantiateTracks(SongManager.Song song)
-    {
-        GameObject songFolder = new GameObject(song.name);
-        songFolder.transform.parent = mixer.transform;
+        currentSongDir = transform.Find(activeSong);
+        currentTrackDir = currentSongDir.transform.Find(name);
+        instrument = currentTrackDir.transform.GetChild(0);
+        Transform muteButton;
+        muteButton = currentTrackDir.transform.Find("InstrumentPanel/InterfacePanel/MuteSoloPanel/MuteButton/MuteButtonOutline");
 
-        for (int i = 0; i < song.tracks.Count; i++)
-        {
-            string prefabName = song.tracks[i].name + "_" + song.tracks[i].songName;
-            // plots prefab tracks equally spaced around the user
-            int angle = i * (360 / song.tracks.Count);
-            Vector3 plotPos = Circle(cameraPos, 2.2f, angle);
-            Quaternion rotation = Quaternion.FromToRotation(Vector3.forward, cameraPos - plotPos);        
+        //muteUI(muteButton, instrument, isMuted);
 
-            // creates prefab based on instrument/track type or family
-            string prefabType = song.tracks[i].type;
-            trackPrefab = Resources.Load("Prefabs/" + prefabType);
-
-            // recalibrates rotation to ensure first prefab is facing center
-            rotation.x = 0.0f;
-
-            // instantiates a track prefab
-            var track = Instantiate(trackPrefab, plotPos, rotation);
-            track.name = prefabName;
-
-            // sets this track prefab to child of Mixer/:songName
-            GameObject currentTrack = GameObject.Find(prefabName);
-            currentTrack.transform.parent = songFolder.transform;
-            AudioClip currentClip;
-
-            // dynamically sets current tracks audio clip
-            currentClip = Resources.Load<AudioClip>("Audio/" + song.tracks[i].clipName);
-            initTrackAudio(prefabName, currentClip, song.tracks[i].volume);
-
-        }
-
-        songFolder.SetActive(song.isActive);
-    }
-
-    private void initTrackAudio(string name, AudioClip audioClip, float volume)
-    {
-        AudioSource audioSource = GameObject.Find(name).transform.GetChild(0).GetComponent<AudioSource>();
-
-        // initializes audioClip of instantiated prefab
-        audioSource.clip = audioClip;
-        audioSource.Play();
-    }
-
-    void activateSong(string name)
-    {
-        int index = name.IndexOf("_Button");
-        if (index != -1)
-        {
-            name = name.Remove(index);
-        }
-
-        foreach (Transform child in mixer.transform)
-        {
-            if (child.gameObject.name == name)
+        // targets the object containing the audio source
+        foreach (Transform child in currentTrackDir)
+        {           
+            if (child.GetComponent<AudioSource>())
             {
-                child.gameObject.SetActive(true);
-            }
-            else
-            {
-                child.gameObject.SetActive(false);
+                AudioSource clip = child.GetComponent<AudioSource>();
+               // clip.mute = !clip.mute;
+                muteUI(muteButton, instrument, clip.mute);
+                //child.GetComponent<AudioSource>().mute = isMuted;
             }
         }
+        Debug.Log(name + " has been muted");
     }
 
-    Vector3 Circle(Vector3 center, float radius, int ang)
+    void SoloTrack(string name)
     {
-        float angle = ang;
-        Vector3 pos;
-        pos.x = center.x + radius * Mathf.Sin(angle * Mathf.Deg2Rad);
-        pos.y = center.y;
-        pos.z = center.z + radius * Mathf.Cos(angle * Mathf.Deg2Rad);
-        return pos;
+        Debug.Log(name + " has been soloed");
+    }
+
+    void muteUI(Transform target, Transform instrument, bool isMuted)
+    {
+        IsActiveEffect activeEffect;
+        IsActiveEffect instrumentEffect;
+
+        activeEffect = target.GetComponent<IsActiveEffect>();
+        instrumentEffect = instrument.GetComponent<IsActiveEffect>();
+        if (isMuted)
+        {
+            activeEffect.AddActivePanelState();
+            instrumentEffect.RemoveActivePanelState();
+        }
+        else
+        {
+            activeEffect.RemoveActivePanelState();
+            instrumentEffect.AddActivePanelState();
+        }
+        updateMixerStatus(instrument, "solo");
+    }
+
+    void updateMixerStatus(Transform instrument, string action)
+    {
+        Debug.Log("update mixer called!!!");
+        GameObject[] taggedObjects;
+        taggedObjects = GameObject.FindGameObjectsWithTag("Track");
+
+        foreach(GameObject obj in taggedObjects)
+        {
+            mixingBoard.Add(obj);
+        }
+
+        for (int z = 0; z < mixingBoard.Count; z++)
+        {
+            AudioSource thisTrack = mixingBoard[z].GetComponent<AudioSource>();
+            if (action == "mute")
+            {
+                if (mixingBoard[z].name == instrument.name)
+                {
+                    thisTrack.mute = !thisTrack.mute;
+                }
+            }
+            else if (action == "solo")
+            {
+                if (!soloedTracks.Contains(thisTrack) && thisTrack.name == instrument.name)
+                {
+                    soloedTracks.Add(thisTrack);
+                    Debug.Log(thisTrack.name + " has been added");
+                }
+                else if (soloedTracks.Contains(thisTrack) && thisTrack.name == instrument.name)
+                {
+                    soloedTracks.Remove(thisTrack);
+                    Debug.Log(thisTrack.name + " has been removed");
+                }
+
+                for (int m = 0; m < mixingBoard.Count; m++)
+                {
+                    if (soloedTracks.Contains(thisTrack))
+                    {
+                        thisTrack.mute = false;
+                    }
+                    else
+                    {
+                        thisTrack.mute = true;
+                    }
+
+                }
+                //for (int s = 0; s < soloedTracks.Count; s++)
+                //{
+                //    if (!soloedTracks.
+                //}
+            }
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            
+        }
     }
 }
